@@ -1,0 +1,22 @@
+/* body,.dont_print {visibility:hidden;}
+.print {visibility:visible;} */
+/* @media print {
+    body * {
+      display: none !important;
+    }
+    .modal,
+    .modal * {
+      display: block !important;
+    }
+  } */
+  /* @media screen
+{
+    .noPrint{}
+    .noScreen{display:none;}
+}
+
+@media print
+{
+    .noPrint{display:none;}
+    .noScreen{}
+} */
