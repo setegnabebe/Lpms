@@ -20,7 +20,7 @@ pipeline {
 
         stage('Build image') {
             steps {
-                dir('LPMS-Main') {
+                dir('LPMS-main') {
                     script {
                         sh "docker build -t ${dockerimagename} ."
                         sh "docker rmi -f ${baseImage}" // Remove previous image if needed
@@ -44,7 +44,7 @@ pipeline {
 
         stage('Deploying App to Kubernetes') {
             steps {
-                dir('LPMS-Main') {
+                dir('LPMS-main') {
                     script {
                         kubernetesDeploy(enableConfigSubstitution: true, configs: "deploy/deployment.yaml", kubeconfigId: "kubernetes")
                         kubernetesDeploy(configs: "deploy/service.yaml", kubeconfigId: "kubernetes")
