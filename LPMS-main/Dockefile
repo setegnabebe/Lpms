@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 ENV \
-  APP_DIR="/" \
+  APP_DIR="/LPMS-main" \
   APP_PORT="80"
 
 WORKDIR $APP_DIR
