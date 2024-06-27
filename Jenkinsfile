@@ -67,8 +67,8 @@ agent {
             steps {
                 dir('/') {
                     script {
-                        kubernetesDeploy(enableConfigSubstitution: true, configs: "deploy/deployment.yaml", kubeconfigId: "kubernetes")
-                        kubernetesDeploy(configs: "deploy/service.yaml", kubeconfigId: "kubernetes")
+                        kubernetesDeploy(enableConfigSubstitution: true, configs: "deployment.yaml", kubeconfigId: "kubernetes")
+                        kubernetesDeploy(configs: "service.yaml", kubeconfigId: "kubernetes")
                     }
                 }
             }
