@@ -1,21 +1,40 @@
-FROM alpine:latest
+# Use Alpine Linux as base image
+FROM php:7.4-fpm-alpine AS build
 
-ENV \
-  APP_DIR="/LPMS-main" \
-  APP_PORT="80"
+# Set environment variables
+ENV APP_DIR="/var/www/html" \
+    APP_PORT="80" \
+    DB_HOST="10.10.1.141" \
+    DB_DATABASE="project_lpms" \
+    DB_USERNAME="root" \
+    DB_PASSWORD="Hagbes_1234"
 
+# Set working directory
 WORKDIR $APP_DIR
-COPY . $APP_DIR
-COPY .env.example $APP_DIR/.env
 
-# Essentials
-RUN echo "UTC" > /etc/timezone
-RUN apk add --no-cache zip unzip curl
-# Installing bash
-RUN apk add bash
-RUN sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
+# Copy application code
+COPY . .
 
-# Installing PHP
+# Install Composer
+RUN apk --no-cache add \
+        curl \
+        git \
+        bash \
+        zip \
+        unzip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install PHP extensions and other necessary packages
+RUN apk --no-cache add \
+        tzdata \
+        postgresql-dev \
+        libzip-dev \
+        mariadb-dev \
+    && docker-php-ext-install pdo_pgsql zip mysqli \
+    && cp /usr/share/zoneinfo/UTC /etc/localtime \
+    && echo "UTC" > /etc/timezone
+#install php
+
 RUN apk add --no-cache php8 \
     php8-common \
     php8-fpm \
@@ -40,13 +59,22 @@ RUN apk add --no-cache php8 \
     php8-tokenizer \
     php8-pecl-redis
 
-# Installing composer
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN rm -rf composer-setup.php
 
-RUN composer install
-# generate an APP_KEY
-RUN php artisan key:generate
+# ---- Runtime Stage ----
+FROM php:7.4-fpm-alpine AS runtime
 
-CMD php artisan serve --host=0.0.0.0 --port=$APP_PORT
+# Set environment variables
+ENV APP_DIR="/var/www/html" \
+    APP_PORT="80"
+
+# Set working directory
+WORKDIR $APP_DIR
+
+# Copy application code and dependencies from build stage
+COPY --from=build $APP_DIR .
+
+# Expose the port where the application is running
+EXPOSE $APP_PORT
+
+# CMD to run your application
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
