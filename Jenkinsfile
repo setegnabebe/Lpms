@@ -8,7 +8,28 @@ pipeline {
 
     }
 
-    agent any
+agent {
+        kubernetes {
+            // Use a Kubernetes Pod Template with Docker-in-Docker support
+            yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+                - name: dind
+                  image: docker:19.03.12-dind
+                  securityContext:
+                    privileged: true
+                  volumeMounts:
+                    - name: docker-sock
+                      mountPath: /var/run/docker.sock
+              volumes:
+                - name: docker-sock
+                  hostPath:
+                    path: /var/run/docker.sock
+            """
+        }
+    }
     
     stages {
 
