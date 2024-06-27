@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lpms
+spec:
+  selector:
+    app: lpms
+  type: NodePort
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetport: 8080
+      nodePort: 32000
+  
