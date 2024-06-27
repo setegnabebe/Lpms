@@ -44,7 +44,7 @@ pipeline {
 
         stage('Deploying App to Kubernetes') {
             steps {
-                dir('/opt') {
+                dir('/') {
                     script {
                         kubernetesDeploy(enableConfigSubstitution: true, configs: "deploy/deployment.yaml", kubeconfigId: "kubernetes")
                         kubernetesDeploy(configs: "deploy/service.yaml", kubeconfigId: "kubernetes")
