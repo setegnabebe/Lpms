@@ -28,6 +28,9 @@ agent {
                   hostPath:
                     path: /var/run/docker.sock
             """
+            // Kubernetes API server and namespace configuration
+            serverUrl "https://10.10.1.135:6443"
+            namespace 'default' 
         }
     }
     
