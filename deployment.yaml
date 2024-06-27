@@ -1,0 +1,22 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lpms
+spec:
+  selector:
+    matchLabels:
+      app: lpms
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lpms
+    spec:
+      nodeName: lpms-main
+      containers:
+        - name: lpms
+          image: 10.10.1.131:5000/lpms:${BUILD_NUMBER}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
