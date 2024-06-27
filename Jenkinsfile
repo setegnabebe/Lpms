@@ -1,35 +1,35 @@
 pipeline
-//   agent {
-//         kubernetes {
-//             label 'docker-agent'
-//             defaultContainer 'jnlp'
-//             yaml """
-// apiVersion: v1
-// kind: Pod
-// metadata:
-//   labels:
-//     some-label: docker-agent
-// spec:
-//   containers:
-//   - name: jnlp
-//     image: jenkins/inbound-agent:4.3-4
-//     args: ['cat']
-//   - name: docker
-//     image: docker:19.03.12
-//     command:
-//     - cat
-//     tty: true
-//     volumeMounts:
-//     - name: docker-sock
-//       mountPath: /var/run/docker.sock
-//   volumes:
-//   - name: docker-sock
-//     hostPath:
-//       path: /var/run/docker.sock
-// """
-//         }
-//     }
-    {
+  agent {
+        kubernetes {
+            label 'docker-agent'
+            defaultContainer 'jnlp'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: docker-agent
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:4.3-4
+    args: ['cat']
+  - name: docker
+    image: docker:19.03.12
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+"""
+        }
+    }
+    
     environment {
         baseImage = "lpms"
         dockerRegistry = "10.10.1.131:5000" 
