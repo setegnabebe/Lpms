@@ -14,7 +14,7 @@ pipeline {
 
         stage('Checkout Latest Source') {
             steps {
-                    git credentialsId: 'github-token', url: 'https://github.com/setegnabebe/lpms.git'
+                    git credentialsId: 'github-credential', url: 'https://github.com/setegnabebe/lpms.git'
             }
         }
 
