@@ -1,10 +1,12 @@
 pipeline {   
     environment {
         baseImage = "lpms"
-        dockerRegistry = "10.10.1.131:5000" 
+        dockerRegistry = "https://10.10.1.131:5000" 
         registryCredential = 'private_registry_login'
         dockerimagename = "${dockerRegistry}/${baseImage}:${BUILD_NUMBER}"
         dockerImage = ""
+        USERNAME = 'hagbes' 
+        PASSWORD = 'Hagbes@1234'
 
     }
 
@@ -33,7 +35,7 @@ pipeline {
         stage('Pushing Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: private_registry_login, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "docker login -u ${USERNAME} -p ${PASSWORD} ${dockerRegistry}"
                         sh "docker push ${dockerimagename}"
                         sh "docker logout ${dockerRegistry}"
@@ -44,13 +46,11 @@ pipeline {
 
         stage('Deploying App to Kubernetes') {
             steps {
-                dir('/') {
-                    script {
-                        kubernetesDeploy(enableConfigSubstitution: true, configs: "deployment.yaml", kubeconfigId: "kubernetes")
-                        kubernetesDeploy(configs: "service.yaml", kubeconfigId: "kubernetes")
-                    }
-                }
-            }
+                script {
+          kubernetesDeploy(configs: "deployment.yaml", 
+                                         "service.yaml")
+          }
+         }
         }
 
     }
